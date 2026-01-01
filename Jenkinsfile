@@ -25,6 +25,7 @@ pipeline {
                 -Dsonar.projectKey=node-app \
                 -Dsonar.sources=. \
                 -Dsonar.exclusions=node_modules/** \
+                -Dsonar.verbose=true
                 -Dsonar.host.url=$SONAR_HOST_URL \
                 -Dsonar.login=$SONAR_AUTH_TOKEN
             """
