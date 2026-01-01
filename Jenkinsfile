@@ -21,10 +21,7 @@ pipeline {
           def scannerHome = tool 'SonarScanner'
           withSonarQubeEnv('sonarqube') {
             sh """
-              ${scannerHome}/bin/sonar-scanner \
-                -Dsonar.projectKey=node-app \
-                -Dsonar.sources=. \
-                -Dsonar.exclusions=node_modules/**
+              ${scannerHome}/bin/sonar-scanner
             """
           }
         }
