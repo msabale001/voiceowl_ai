@@ -22,7 +22,7 @@ pipeline {
           withSonarQubeEnv('sonarqube') {
             sh """
               ${scannerHome}/bin/sonar-scanner \
-                -Dsonar.projectKey=node-app \
+                -Dsonar.projectKey=node_app \
                 -Dsonar.sources=. \
                 -Dsonar.exclusions=node_modules/** \
                 -Dsonar.verbose=true
