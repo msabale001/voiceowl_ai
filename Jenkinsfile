@@ -20,9 +20,12 @@ pipeline {
         script {
           def scannerHome = tool 'SonarScanner'
           withSonarQubeEnv('sonarqube') {
-            sh """
+            sh '''
+              echo "=== SONAR ENV CHECK ==="
+              env | grep SONAR || true
+              echo "======================"
               ${scannerHome}/bin/sonar-scanner
-            """
+            '''
           }
         }
       }
