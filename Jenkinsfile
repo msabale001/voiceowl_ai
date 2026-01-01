@@ -15,6 +15,30 @@ pipeline {
       }
     }
 
+    stage('SonarQube Analysis') {
+      steps {
+        script {
+          def scannerHome = tool 'SonarScanner'
+          withSonarQubeEnv('sonarqube') {
+            sh """
+              ${scannerHome}/bin/sonar-scanner \
+                -Dsonar.projectKey=node-app \
+                -Dsonar.sources=. \
+                -Dsonar.exclusions=node_modules/**
+            """
+          }
+        }
+      }
+    }
+
+    stage('Quality Gate') {
+      steps {
+        timeout(time: 2, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
     stage('Docker Build') {
       steps {
         sh '''
@@ -71,10 +95,11 @@ pipeline {
 
   post {
     success {
-      echo "Image pushed to Docker Hub."
+      echo "Quality Gate + Security Gate passed. Image pushed to Docker Hub."
     }
     failure {
-      echo "Image was NOT pushed."
+      echo "Pipeline failed. Image was NOT pushed."
     }
   }
 }
+
