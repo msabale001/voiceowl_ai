@@ -18,17 +18,20 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         script {
-          def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+          def scannerHome = tool 'SonarScanner'
           withSonarQubeEnv('sonarqube') {
             sh """
-              echo "Using SonarScanner at: ${scannerHome}"
-              ${scannerHome}/bin/sonar-scanner
+              ${scannerHome}/bin/sonar-scanner \
+                -Dsonar.projectKey=node-app \
+                -Dsonar.sources=. \
+                -Dsonar.exclusions=node_modules/** \
+                -Dsonar.host.url=$SONAR_HOST_URL \
+                -Dsonar.login=$SONAR_AUTH_TOKEN
             """
           }
         }
       }
     }
-
     stage('Quality Gate') {
       steps {
         timeout(time: 2, unit: 'MINUTES') {
