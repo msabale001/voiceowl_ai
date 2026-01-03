@@ -15,24 +15,15 @@ pipeline {
       }
     }
 
-    stage('SonarQube Analysis') {
-      steps {
-        script {
-          def scannerHome = tool 'SonarScanner'
-          withSonarQubeEnv('sonarqube') {
-            sh """
-              ${scannerHome}/bin/sonar-scanner \
-                -Dsonar.projectKey=node_app \
-                -Dsonar.sources=. \
-                -Dsonar.exclusions=node_modules/** \
-                -Dsonar.verbose=true
-                -Dsonar.host.url=$SONAR_HOST_URL \
-                -Dsonar.login=$SONAR_AUTH_TOKEN
-            """
-          }
+    stage('SonarQube Analysis')  {
+            environment {
+                SONAR_HOST_URL = 'http://34.238.246.210:9000' // Replace with your SonarQube URL
+                SONAR_AUTH_TOKEN = credentials('sonarqube') // Store your token in Jenkins credentials
+            }
+            steps {
+                sh 'mvn sonar:sonar -Dsonar.projectKey=sample_project -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN'
+            }
         }
-      }
-    }
     stage('Quality Gate') {
       steps {
         timeout(time: 2, unit: 'MINUTES') {
