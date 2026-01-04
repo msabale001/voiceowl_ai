@@ -81,6 +81,25 @@ pipeline {
         }
       }
     }
+    stage('Update Manifest') {
+      steps {
+        sh '''
+          echo "Updating image tag in deployment.yaml"
+          sed -i "s|image: msabale/node-app:.*|image: msabale/node-app:${BUILD_NUMBER}|" deployment.yaml
+          grep "image:" deployment.yaml
+        '''
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      steps {
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh '''
+            kubectl apply -f deployment.yaml
+            kubectl rollout status deployment/node-app
+          '''
+        }
+      }
+    }
 
     stage('Cleanup') {
       steps {
