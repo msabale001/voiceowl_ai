@@ -81,18 +81,6 @@ pipeline {
         }
       }
     }
-    stage('Deploy to Kubernetes') {
-      steps {
-        withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh '''
-            kubectl set image deployment/node-app \
-              node-app=msabale/node-app:${BUILD_NUMBER}
-
-            kubectl rollout status deployment/node-app
-          '''
-        }
-      }
-    }
     stage('Cleanup') {
       steps {
         sh '''
