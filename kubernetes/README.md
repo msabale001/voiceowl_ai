@@ -6,10 +6,14 @@ Network policies applied so that pods within respective namespaces should not ab
 **Kubernetes Hardening**
 
 🔒 Security Controls Applied
-
 securityContext:
+
 runAsNonRoot: true
+
 allowPrivilegeEscalation: false
+
 Resource requests & limits
+
 NetworkPolicy for namespace isolation
+
 HPA
